@@ -1,3 +1,4 @@
+import 'package:crcrme_stage_form_demo/common/widgets/list_tile_radio.dart';
 import 'package:flutter/material.dart';
 
 import '/common/widgets/question_with_text.dart';
@@ -60,27 +61,17 @@ class _QuestionWithRadioBoolState extends State<QuestionWithRadioBool> {
               validator: (value) => value == null ? "Nop" : null,
               builder: (state) => Column(
                 children: [
-                  InkWell(
-                    onTap: () => _setChoice(state, true),
-                    child: ListTile(
-                      leading: Radio(
-                        value: true,
-                        groupValue: state.value,
-                        onChanged: (value) => _setChoice(state, value),
-                      ),
-                      title: Text(widget.textTrue),
-                    ),
+                  ListTileRadio(
+                    titleLabel: widget.textTrue,
+                    value: true,
+                    groupValue: state.value,
+                    onChanged: (value) => _setChoice(state, value),
                   ),
-                  InkWell(
-                    onTap: () => _setChoice(state, false),
-                    child: ListTile(
-                      leading: Radio(
-                        value: false,
-                        groupValue: state.value,
-                        onChanged: (value) => _setChoice(state, value),
-                      ),
-                      title: Text(widget.textFalse),
-                    ),
+                  ListTileRadio(
+                    titleLabel: widget.textFalse,
+                    value: false,
+                    groupValue: state.value,
+                    onChanged: (value) => _setChoice(state, value),
                   ),
                 ],
               ),

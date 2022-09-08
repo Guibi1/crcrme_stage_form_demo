@@ -1,3 +1,4 @@
+import 'package:crcrme_stage_form_demo/common/widgets/list_tile_checkbox.dart';
 import 'package:flutter/material.dart';
 
 import '/common/widgets/question_with_text.dart';
@@ -79,17 +80,10 @@ class _QuestionWithCheckboxListState extends State<QuestionWithCheckboxList> {
               builder: (state) => Column(
                 children: [
                   ...widget.choices.map(
-                    (choice) => InkWell(
-                      onTap: () =>
-                          _updateChoice(state, choice, !choices[choice]!),
-                      child: ListTile(
-                        leading: Checkbox(
-                          value: state.value!.contains(choice),
-                          onChanged: (value) =>
-                              _updateChoice(state, choice, value),
-                        ),
-                        title: Text(choice),
-                      ),
+                    (choice) => ListTileCheckbox(
+                      titleLabel: choice,
+                      value: state.value!.contains(choice),
+                      onChanged: (value) => _updateChoice(state, choice, value),
                     ),
                   ),
                   InkWell(

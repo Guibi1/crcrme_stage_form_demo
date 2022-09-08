@@ -3,8 +3,6 @@ import 'package:crcrme_stage_form_demo/common/widgets/autocomplete_field.dart';
 import 'package:crcrme_stage_form_demo/misc/form_service.dart';
 import 'package:flutter/material.dart';
 
-import '/common/models/job.dart';
-import '/common/models/sector.dart';
 import '/common/widgets/question_with_checkbox_list.dart';
 import '/common/widgets/question_with_radio_bool.dart';
 import '/common/widgets/question_with_text.dart';
@@ -23,8 +21,8 @@ class _StageFormScreenState extends State<StageFormScreen> {
   final _sectorController = TextEditingController();
   final _jobController = TextEditingController();
 
-  Sector? sector;
-  Job? job;
+  ActivitySector? sector;
+  Specialization? job;
 
   String? errorSector;
   String? errorJob;
@@ -73,7 +71,7 @@ class _StageFormScreenState extends State<StageFormScreen> {
               children: [
                 AutoCompleteField(
                   controller: _sectorController,
-                  labelText: "Sector",
+                  labelText: "Secteur d'activité",
                   errorText: errorSector,
                   onSubmit: onJobSubmit,
                   suggestions: JobDataFileService.sectors
@@ -82,7 +80,7 @@ class _StageFormScreenState extends State<StageFormScreen> {
                 ),
                 AutoCompleteField(
                   controller: _jobController,
-                  labelText: "Job",
+                  labelText: "Spécialisation",
                   errorText: errorJob,
                   onSubmit: onJobSubmit,
                   suggestions: sector?.jobs

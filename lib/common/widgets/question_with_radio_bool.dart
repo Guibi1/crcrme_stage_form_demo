@@ -40,7 +40,7 @@ class _QuestionWithRadioBoolState extends State<QuestionWithRadioBool> {
     return Visibility(
       visible: widget.visible,
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8),
+        padding: const EdgeInsets.symmetric(vertical: 16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

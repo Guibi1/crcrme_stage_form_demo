@@ -60,7 +60,7 @@ class _QuestionWithCheckboxListState extends State<QuestionWithCheckboxList> {
                       title: Text(choice),
                       value: state.value!.contains(choice),
                       onChanged: (value) {
-                        choices[choice] = value!;
+                        setState(() => choices[choice] = value!);
                         if (value == true) {
                           state.didChange(state.value!.union({choice}));
                         } else {

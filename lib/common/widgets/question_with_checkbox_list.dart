@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '/common/widgets/question_with_text.dart';
+
 class QuestionWithCheckboxList extends StatefulWidget {
   const QuestionWithCheckboxList({
     this.visible = true,
@@ -39,64 +41,59 @@ class _QuestionWithCheckboxListState extends State<QuestionWithCheckboxList> {
   Widget build(BuildContext context) {
     return Visibility(
       visible: widget.visible,
-      child: Column(
-        children: [
-          Text(widget.choicesQuestion),
-          FormField<Set<String>>(
-            onSaved: widget.onSavedChoices,
-            initialValue: widget.initialChoices ?? {},
-            validator: (value) =>
-                value!.isEmpty && _autre.isEmpty ? "Nop" : null,
-            builder: (state) => Column(
-              children: [
-                ...widget.choices.map(
-                  (choice) => CheckboxListTile(
-                    title: Text(choice),
-                    value: state.value!.contains(choice),
-                    onChanged: (value) {
-                      choices[choice] = value!;
-                      if (value == true) {
-                        state.didChange(state.value!.union({choice}));
-                      } else {
-                        state.didChange(state.value!.difference({choice}));
-                      }
-                    },
-                  ),
-                ),
-                ListTile(
-                  title: TextField(
-                    decoration: const InputDecoration(labelText: "Autre :"),
-                    onChanged: (text) => setState(() => _autre = text),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Visibility(
-            visible:
-                (choices.values.any((c) => c == true) || _autre.isNotEmpty) &&
-                    widget.textQuestion != null,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              child: Column(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(widget.choicesQuestion),
+            const SizedBox(height: 8),
+            FormField<Set<String>>(
+              onSaved: widget.onSavedChoices,
+              initialValue: widget.initialChoices ?? {},
+              validator: (value) =>
+                  value!.isEmpty && _autre.isEmpty ? "Nop" : null,
+              builder: (state) => Column(
                 children: [
-                  Text(widget.textQuestion!),
-                  TextFormField(
-                    onSaved: widget.onSavedText,
-                    initialValue: widget.initialText ?? "",
-                    validator: (value) {
-                      if (choices.values.any((c) => c == true) ||
-                          _autre.isNotEmpty == true && value!.isEmpty) {
-                        return "Nop";
-                      }
-                      return null;
-                    },
+                  ...widget.choices.map(
+                    (choice) => CheckboxListTile(
+                      title: Text(choice),
+                      value: state.value!.contains(choice),
+                      onChanged: (value) {
+                        choices[choice] = value!;
+                        if (value == true) {
+                          state.didChange(state.value!.union({choice}));
+                        } else {
+                          state.didChange(state.value!.difference({choice}));
+                        }
+                      },
+                    ),
+                  ),
+                  ListTile(
+                    title: TextField(
+                      decoration: const InputDecoration(labelText: "Autre :"),
+                      onChanged: (text) => setState(() => _autre = text),
+                    ),
                   ),
                 ],
               ),
             ),
-          ),
-        ],
+            QuestionWithText(
+              visible:
+                  choices.values.any((c) => c == true) || _autre.isNotEmpty,
+              question: widget.textQuestion ?? "",
+              onSaved: widget.onSavedText,
+              initialValue: widget.initialText ?? "",
+              validator: (value) {
+                if (choices.values.any((c) => c == true) ||
+                    _autre.isNotEmpty == true && value!.isEmpty) {
+                  return "Nop";
+                }
+                return null;
+              },
+            ),
+          ],
+        ),
       ),
     );
   }

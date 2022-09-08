@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 
+import '/common/widgets/question_with_text.dart';
+
 class QuestionWithRadioBool extends StatefulWidget {
   const QuestionWithRadioBool({
     this.visible = true,
+    this.textTrue = "Oui",
+    this.textFalse = "Non",
     required this.choiceQuestion,
     this.initialChoice,
     this.onSavedChoice,
@@ -13,6 +17,8 @@ class QuestionWithRadioBool extends StatefulWidget {
   });
 
   final bool visible;
+  final String textTrue;
+  final String textFalse;
 
   final String choiceQuestion;
   final bool? initialChoice;
@@ -33,51 +39,51 @@ class _QuestionWithRadioBoolState extends State<QuestionWithRadioBool> {
   Widget build(BuildContext context) {
     return Visibility(
       visible: widget.visible,
-      child: Column(
-        children: [
-          Text(widget.choiceQuestion),
-          FormField<bool?>(
-            onSaved: widget.onSavedChoice,
-            initialValue: widget.initialChoice,
-            validator: (value) => value == null ? "Nop" : null,
-            builder: (state) => Row(
-              children: [
-                const Text("Oui"),
-                Radio(
-                  value: true,
-                  groupValue: state.value,
-                  onChanged: (value) {
-                    state.didChange(value);
-                    setState(() => choice = value);
-                  },
-                ),
-                const Text("Non"),
-                Radio(
-                  value: false,
-                  groupValue: state.value,
-                  onChanged: (value) {
-                    state.didChange(value);
-                    setState(() => choice = value);
-                  },
-                ),
-              ],
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(widget.choiceQuestion),
+            const SizedBox(height: 8),
+            FormField<bool?>(
+              onSaved: widget.onSavedChoice,
+              initialValue: widget.initialChoice,
+              validator: (value) => value == null ? "Nop" : null,
+              builder: (state) => Row(
+                children: [
+                  Radio(
+                    value: true,
+                    groupValue: state.value,
+                    onChanged: (value) {
+                      state.didChange(value);
+                      setState(() => choice = value);
+                    },
+                  ),
+                  Text(widget.textTrue),
+                  const SizedBox(width: 16),
+                  Radio(
+                    value: false,
+                    groupValue: state.value,
+                    onChanged: (value) {
+                      state.didChange(value);
+                      setState(() => choice = value);
+                    },
+                  ),
+                  Text(widget.textFalse),
+                ],
+              ),
             ),
-          ),
-          Visibility(
-            visible: choice == true && widget.textQuestion != null,
-            child: Column(
-              children: [
-                Text(widget.textQuestion!),
-                TextFormField(
-                  onSaved: widget.onSavedText,
-                  initialValue: widget.initialText ?? "",
-                  validator: (value) =>
-                      choice == true && value!.isEmpty ? "Nop" : null,
-                ),
-              ],
+            QuestionWithText(
+              visible: choice == true,
+              question: widget.textQuestion ?? "",
+              onSaved: widget.onSavedText,
+              initialValue: widget.initialText ?? "",
+              validator: (value) =>
+                  choice == true && value!.isEmpty ? "Nop" : null,
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

@@ -35,6 +35,11 @@ class QuestionWithRadioBool extends StatefulWidget {
 class _QuestionWithRadioBoolState extends State<QuestionWithRadioBool> {
   bool? choice;
 
+  void _setChoice(FormFieldState<bool?> state, bool? value) {
+    state.didChange(value);
+    setState(() => choice = value);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Visibility(
@@ -50,27 +55,30 @@ class _QuestionWithRadioBoolState extends State<QuestionWithRadioBool> {
               onSaved: widget.onSavedChoice,
               initialValue: widget.initialChoice,
               validator: (value) => value == null ? "Nop" : null,
-              builder: (state) => Row(
+              builder: (state) => Column(
                 children: [
-                  Radio(
-                    value: true,
-                    groupValue: state.value,
-                    onChanged: (value) {
-                      state.didChange(value);
-                      setState(() => choice = value);
-                    },
+                  InkWell(
+                    onTap: () => _setChoice(state, true),
+                    child: ListTile(
+                      leading: Radio(
+                        value: true,
+                        groupValue: state.value,
+                        onChanged: (value) => _setChoice(state, value),
+                      ),
+                      title: Text(widget.textTrue),
+                    ),
                   ),
-                  Text(widget.textTrue),
-                  const SizedBox(width: 16),
-                  Radio(
-                    value: false,
-                    groupValue: state.value,
-                    onChanged: (value) {
-                      state.didChange(value);
-                      setState(() => choice = value);
-                    },
+                  InkWell(
+                    onTap: () => _setChoice(state, false),
+                    child: ListTile(
+                      leading: Radio(
+                        value: false,
+                        groupValue: state.value,
+                        onChanged: (value) => _setChoice(state, value),
+                      ),
+                      title: Text(widget.textFalse),
+                    ),
                   ),
-                  Text(widget.textFalse),
                 ],
               ),
             ),

@@ -37,6 +37,16 @@ class _QuestionWithCheckboxListState extends State<QuestionWithCheckboxList> {
 
   String _autre = "";
 
+  void _updateChoice(
+      FormFieldState<Set<String>> state, String choice, bool? value) {
+    setState(() => choices[choice] = value!);
+    if (value == true) {
+      state.didChange(state.value!.union({choice}));
+    } else {
+      state.didChange(state.value!.difference({choice}));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Visibility(
@@ -56,17 +66,17 @@ class _QuestionWithCheckboxListState extends State<QuestionWithCheckboxList> {
               builder: (state) => Column(
                 children: [
                   ...widget.choices.map(
-                    (choice) => CheckboxListTile(
-                      title: Text(choice),
-                      value: state.value!.contains(choice),
-                      onChanged: (value) {
-                        setState(() => choices[choice] = value!);
-                        if (value == true) {
-                          state.didChange(state.value!.union({choice}));
-                        } else {
-                          state.didChange(state.value!.difference({choice}));
-                        }
-                      },
+                    (choice) => InkWell(
+                      onTap: () =>
+                          _updateChoice(state, choice, !choices[choice]!),
+                      child: ListTile(
+                        leading: Checkbox(
+                          value: state.value!.contains(choice),
+                          onChanged: (value) =>
+                              _updateChoice(state, choice, value),
+                        ),
+                        title: Text(choice),
+                      ),
                     ),
                   ),
                   ListTile(

@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:crcrme_stage_form_demo/common/widgets/autocomplete_field.dart';
+import 'package:crcrme_stage_form_demo/misc/form_service.dart';
 import 'package:flutter/material.dart';
 
 import '/common/models/job.dart';
@@ -29,6 +30,10 @@ class _StageFormScreenState extends State<StageFormScreen> {
   String? errorJob;
 
   void _submit() {
+    if (sector == null || job == null) return;
+    if (!FormService.validateForm(_formKey)) return;
+
+    _formKey.currentState!.save();
     _formKey.currentState!.reset();
   }
 
@@ -283,9 +288,12 @@ class _StageFormScreenState extends State<StageFormScreen> {
                   textQuestion: "Pouvez-vous me raconter ce qu’il s’est passé?",
                 ),
                 const SizedBox(height: 24),
-                ElevatedButton(
-                  onPressed: _submit,
-                  child: const Text("Soumettre"),
+                Visibility(
+                  visible: questions.isNotEmpty,
+                  child: ElevatedButton(
+                    onPressed: _submit,
+                    child: const Text("Soumettre"),
+                  ),
                 ),
               ],
             ),

@@ -19,20 +19,24 @@ class _StageFormScreenState extends State<StageFormScreen> {
   final _formKey = GlobalKey<FormState>();
 
   final _sectorController = TextEditingController();
-  final _jobController = TextEditingController();
-
-  ActivitySector? sector;
-  Specialization? job;
+  final _specializationController = TextEditingController();
 
   String? errorSector;
-  String? errorJob;
+  String? errorSpecialization;
+
+  ActivitySector? sector;
+  Specialization? specialization;
+  Set<String> questions = {};
 
   void _submit() {
-    if (sector == null || job == null) return;
+    if (sector == null || specialization == null) return;
     if (!FormService.validateForm(_formKey)) return;
 
     _formKey.currentState!.save();
     _formKey.currentState!.reset();
+
+    _sectorController.text = "";
+    _specializationController.text = "";
   }
 
   void onJobSubmit() {
@@ -40,24 +44,25 @@ class _StageFormScreenState extends State<StageFormScreen> {
       sector = JobDataFileService.sectors.firstWhereOrNull(
         (sector) => "${sector.id} - ${sector.name}" == _sectorController.text,
       );
-      job = sector?.jobs.firstWhereOrNull(
-        (job) => "${job.id} - ${job.name}" == _jobController.text,
+      specialization = sector?.jobs.firstWhereOrNull(
+        (job) => "${job.id} - ${job.name}" == _specializationController.text,
       );
 
       errorSector = null;
-      errorJob = null;
+      errorSpecialization = null;
       if (sector == null) {
         errorSector = "Ce secteur n'existe pas";
-      } else if (job == null && _jobController.text.isNotEmpty) {
-        errorJob = "Ce métier n'existe pas";
+      } else if (specialization == null &&
+          _specializationController.text.isNotEmpty) {
+        errorSpecialization = "Ce métier n'existe pas";
       }
     });
+
+    questions = specialization?.questions ?? {};
   }
 
   @override
   Widget build(BuildContext context) {
-    final questions = job?.questions ?? {};
-
     return Scaffold(
       appBar: AppBar(
         title: const Text("CR-CRME Formulaire de stage"),
@@ -79,9 +84,9 @@ class _StageFormScreenState extends State<StageFormScreen> {
                       .toList(),
                 ),
                 AutoCompleteField(
-                  controller: _jobController,
+                  controller: _specializationController,
                   labelText: "Spécialisation",
-                  errorText: errorJob,
+                  errorText: errorSpecialization,
                   onSubmit: onJobSubmit,
                   suggestions: sector?.jobs
                           .map((job) => "${job.id} - ${job.name}")

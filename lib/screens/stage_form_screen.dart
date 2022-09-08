@@ -282,6 +282,7 @@ class _StageFormScreenState extends State<StageFormScreen> {
                       "Est-ce qu’il y a déjà eu des incidents ou des accidents du travail au poste que l’élève occupera en stage?",
                   textQuestion: "Pouvez-vous me raconter ce qu’il s’est passé?",
                 ),
+                const SizedBox(height: 24),
                 ElevatedButton(
                   onPressed: _submit,
                   child: const Text("Soumettre"),

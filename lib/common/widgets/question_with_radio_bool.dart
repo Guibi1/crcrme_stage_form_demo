@@ -49,7 +49,10 @@ class _QuestionWithRadioBoolState extends State<QuestionWithRadioBool> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(widget.choiceQuestion),
+            Text(
+              widget.choiceQuestion,
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
             const SizedBox(height: 8),
             FormField<bool?>(
               onSaved: widget.onSavedChoice,

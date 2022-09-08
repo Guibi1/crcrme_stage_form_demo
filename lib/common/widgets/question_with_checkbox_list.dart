@@ -56,7 +56,10 @@ class _QuestionWithCheckboxListState extends State<QuestionWithCheckboxList> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(widget.choicesQuestion),
+            Text(
+              widget.choicesQuestion,
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
             const SizedBox(height: 8),
             FormField<Set<String>>(
               onSaved: widget.onSavedChoices,

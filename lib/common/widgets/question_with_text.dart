@@ -26,7 +26,10 @@ class QuestionWithText extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(question),
+            Text(
+              question,
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
             TextFormField(
               initialValue: initialValue,
               onSaved: onSaved,

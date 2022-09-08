@@ -29,14 +29,13 @@ class AutoCompleteField extends StatelessWidget {
       textSubmitted: (_) => onSubmit(),
       itemSubmitted: (_) => onSubmit(),
       clearOnSubmit: false,
+      suggestionsAmount: 30,
       suggestions: suggestions,
       itemBuilder: (context, suggestion) => ListTile(title: Text(suggestion)),
       itemSorter: (a, b) => a.compareTo(b),
       minLength: 0,
       itemFilter: (suggestion, query) =>
-          suggestion.toString().toLowerCase().startsWith(
-                query.toLowerCase(),
-              ),
+          suggestion.toString().toLowerCase().contains(query.toLowerCase()),
     );
   }
 }

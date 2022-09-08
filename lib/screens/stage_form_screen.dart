@@ -35,18 +35,18 @@ class _StageFormScreenState extends State<StageFormScreen> {
   void onJobSubmit() {
     setState(() {
       sector = JobDataFileService.sectors.firstWhereOrNull(
-        (sector) => sector.name == _sectorController.text,
+        (sector) => "${sector.id} - ${sector.name}" == _sectorController.text,
       );
       job = sector?.jobs.firstWhereOrNull(
-        (job) => job.name == _jobController.text,
+        (job) => "${job.id} - ${job.name}" == _jobController.text,
       );
 
       errorSector = null;
       errorJob = null;
       if (sector == null) {
-        errorSector = "nah bro";
-      } else if (job == null) {
-        errorJob = "oof";
+        errorSector = "Ce secteur n'existe pas";
+      } else if (job == null && _jobController.text.isNotEmpty) {
+        errorJob = "Ce métier n'existe pas";
       }
     });
   }
@@ -72,7 +72,7 @@ class _StageFormScreenState extends State<StageFormScreen> {
                   errorText: errorSector,
                   onSubmit: onJobSubmit,
                   suggestions: JobDataFileService.sectors
-                      .map((sector) => sector.name)
+                      .map((sector) => "${sector.id} - ${sector.name}")
                       .toList(),
                 ),
                 AutoCompleteField(
@@ -80,8 +80,10 @@ class _StageFormScreenState extends State<StageFormScreen> {
                   labelText: "Job",
                   errorText: errorJob,
                   onSubmit: onJobSubmit,
-                  suggestions:
-                      sector?.jobs.map((job) => job.name).toList() ?? [],
+                  suggestions: sector?.jobs
+                          .map((job) => "${job.id} - ${job.name}")
+                          .toList() ??
+                      [],
                 ),
                 QuestionWithRadioBool(
                   visible: questions.contains("1"),
@@ -121,15 +123,16 @@ class _StageFormScreenState extends State<StageFormScreen> {
                 ),
                 QuestionWithCheckboxList(
                   visible: questions.contains("6"),
-                  choicesQuestion: "Est-ce que tu utilises :",
+                  choicesQuestion:
+                      "Est-ce que l’élève doit travailler en hauteur et utiliser :",
                   choices: const {"Un escabeau", "Une échelle"},
                   textQuestion:
-                      "Peux-tu me montrer comment tu t’en sers? Qui t’a expliqué comment faire?",
+                      "Mon élève n’a jamais travaillé avec ce genre d’équipement, est-ce que vous pourriez lui montrer comment s’en servir?",
                 ),
                 QuestionWithCheckboxList(
                   visible: questions.contains("7"),
                   choicesQuestion:
-                      "Est-ce que tu utilises un outil coupant, par exemple pour couper des produits ou pour ouvrir des boites comme:",
+                      "Est-ce que l’élève doit utiliser un outil coupant, par exemple pour couper des produits ou pour ouvrir des boites comme:",
                   choices: const {
                     "Un couteau",
                     "Un couteau à lame rétractable (Exacto)",
@@ -137,12 +140,12 @@ class _StageFormScreenState extends State<StageFormScreen> {
                     "Une scie",
                   },
                   textQuestion:
-                      "Peux-tu me montrer comment tu t’en sers? Qui t’a expliqué comment faire?",
+                      "Mon élève n’a jamais travaillé avec ce genre d’équipement, est-ce que vous pourriez lui montrer comment s’en servir?",
                 ),
                 QuestionWithCheckboxList(
                   visible: questions.contains("8"),
                   choicesQuestion:
-                      "Est-ce qu’à ton poste de travail, il fait :",
+                      "Est-ce que l’élève doit travailler dans un environnement où :",
                   choices: const {"Chaud", "Froid"},
                   textQuestion:
                       "Est-ce qu’il y a des équipements de protection prévus? Est-ce qu’il y a des choses que mon élève doit savoir par rapport à ça? ",

@@ -44,7 +44,7 @@ class ActivitySector extends ItemSerializable {
 
   @override
   Map<String, dynamic> serializedMap() {
-    throw "Sector should not be serialized. Store its ID intead.";
+    throw "Activity Sector should not be serialized. Store its ID intead.";
   }
 
   Specialization fromId(String id) {

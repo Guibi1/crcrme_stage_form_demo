@@ -24,11 +24,6 @@ abstract class JobDataFileService {
 }
 
 class ActivitySector extends ItemSerializable {
-  ActivitySector({
-    required this.name,
-    required this.jobs,
-  });
-
   ActivitySector.fromSerialized(map)
       : name = map["name"],
         jobs = List.from(
@@ -56,19 +51,13 @@ class ActivitySector extends ItemSerializable {
 }
 
 class Specialization extends ItemSerializable {
-  Specialization({
-    required this.name,
-    required this.skills,
-    required this.questions,
-  });
-
   Specialization.fromSerialized(map)
       : name = map["name"],
         skills = List.from(
           map["skills"].map((e) => Skill.fromSerialized(e)),
           growable: false,
         ),
-        questions = Set.from(map["questions"].map((e) => e.toString())),
+        questions = Set.from(map["questions"]),
         super.fromSerialized(map);
 
   @override
@@ -92,24 +81,11 @@ class Specialization extends ItemSerializable {
 }
 
 class Skill extends ItemSerializable {
-  Skill({
-    required this.name,
-    required this.criteria,
-    required this.tasks,
-    required this.risks,
-  });
-
   Skill.fromSerialized(map)
       : name = map["name"],
-        criteria = List.from(
-          map["criteria"].map((e) => e.toString()),
-          growable: false,
-        ),
-        tasks = List.from(
-          map["tasks"].map((e) => e.toString()),
-          growable: false,
-        ),
-        risks = Set.from(map["risks"].map((e) => e.toString())),
+        criteria = List.from(map["criteria"], growable: false),
+        tasks = List.from(map["tasks"], growable: false),
+        risks = Set.from(map["risks"]),
         super.fromSerialized(map);
 
   @override

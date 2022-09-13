@@ -8,18 +8,19 @@ abstract class JobDataFileService {
     final file = await rootBundle.loadString("assets/jobs-data.json");
     final json = jsonDecode(file) as List;
 
-    _sectors = json
-        .map((e) => ActivitySector.fromSerialized(e))
-        .toList(growable: false);
+    _sectors = List.from(
+      json.map((e) => ActivitySector.fromSerialized(e)),
+      growable: false,
+    );
   }
 
   static ActivitySector fromId(String id) {
     return _sectors.firstWhere((sector) => sector.id == id);
   }
 
-  static List<ActivitySector> _sectors = [];
-
   static List<ActivitySector> get sectors => _sectors;
+
+  static List<ActivitySector> _sectors = [];
 }
 
 class ActivitySector extends ItemSerializable {
@@ -30,9 +31,10 @@ class ActivitySector extends ItemSerializable {
 
   ActivitySector.fromSerialized(map)
       : name = map["name"],
-        jobs = (map["specializations"] as List)
-            .map((data) => Specialization.fromSerialized(data))
-            .toList(),
+        jobs = List.from(
+          map["specializations"].map((e) => Specialization.fromSerialized(e)),
+          growable: false,
+        ),
         super.fromSerialized(map);
 
   @override
@@ -62,12 +64,11 @@ class Specialization extends ItemSerializable {
 
   Specialization.fromSerialized(map)
       : name = map["name"],
-        skills = (map["skills"] as List)
-            .map((s) => Skill.fromSerialized(s))
-            .toList(),
-        questions = (map["questions"] as List)
-            .map((question) => question.toString())
-            .toSet(),
+        skills = List.from(
+          map["skills"].map((e) => Skill.fromSerialized(e)),
+          growable: false,
+        ),
+        questions = Set.from(map["questions"].map((e) => e.toString())),
         super.fromSerialized(map);
 
   @override
@@ -100,9 +101,15 @@ class Skill extends ItemSerializable {
 
   Skill.fromSerialized(map)
       : name = map["name"],
-        criteria = (map["criteria"] as List).map((e) => e.toString()).toList(),
-        tasks = (map["tasks"] as List).map((e) => e.toString()).toList(),
-        risks = (map["risks"] as List).map((risk) => risk.toString()).toSet(),
+        criteria = List.from(
+          map["criteria"].map((e) => e.toString()),
+          growable: false,
+        ),
+        tasks = List.from(
+          map["tasks"].map((e) => e.toString()),
+          growable: false,
+        ),
+        risks = Set.from(map["risks"].map((e) => e.toString())),
         super.fromSerialized(map);
 
   @override

@@ -79,19 +79,19 @@ class _StageFormScreenState extends State<StageFormScreen> {
                   labelText: "Secteur d'activité",
                   errorText: errorSector,
                   onSubmit: onJobSubmit,
-                  suggestions: JobDataFileService.sectors
-                      .map((sector) => "${sector.id} - ${sector.name}")
-                      .toList(),
+                  suggestions: [
+                    ...JobDataFileService.sectors
+                        .map((sector) => "${sector.id} - ${sector.name}")
+                  ],
                 ),
                 AutoCompleteField(
                   controller: _specializationController,
                   labelText: "Spécialisation",
                   errorText: errorSpecialization,
                   onSubmit: onJobSubmit,
-                  suggestions: sector?.jobs
-                          .map((job) => "${job.id} - ${job.name}")
-                          .toList() ??
-                      [],
+                  suggestions: [
+                    ...?sector?.jobs.map((job) => "${job.id} - ${job.name}")
+                  ],
                 ),
                 QuestionWithRadioBool(
                   visible: questions.contains("1"),

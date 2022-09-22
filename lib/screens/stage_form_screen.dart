@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
@@ -29,15 +31,25 @@ class _StageFormScreenState extends State<StageFormScreen> {
   Specialization? specialization;
   Set<String> questions = {};
 
+  Map<String, dynamic> awnser = {};
+  String? awnserJson;
+
   void _submit() {
     if (sector == null || specialization == null) return;
     if (!FormService.validateForm(_formKey)) return;
 
     _formKey.currentState!.save();
-    _formKey.currentState!.reset();
 
     _sectorController.text = "";
     _specializationController.text = "";
+
+    setState(() {
+      awnserJson = jsonEncode(awnser);
+      awnser = {};
+      print(awnserJson);
+    });
+
+    _formKey.currentState!.reset();
   }
 
   void onJobSubmit() {
@@ -60,6 +72,7 @@ class _StageFormScreenState extends State<StageFormScreen> {
     });
 
     questions = specialization?.questions ?? {};
+    awnserJson = null;
   }
 
   @override
@@ -105,6 +118,9 @@ class _StageFormScreenState extends State<StageFormScreen> {
                         textTrue: question.choices.firstOrNull,
                         textFalse: question.choices.lastOrNull,
                         textQuestion: question.getTextQuestion(isProfessor),
+                        onSavedChoice: (choice) => awnser[question.id] = choice,
+                        onSavedText: (text) =>
+                            awnser["${question.id}+t"] = text,
                       );
 
                     case Type.checkbox:
@@ -112,11 +128,16 @@ class _StageFormScreenState extends State<StageFormScreen> {
                         choicesQuestion: question.getQuestion(isProfessor),
                         choices: question.choices,
                         textQuestion: question.getTextQuestion(isProfessor),
+                        onSavedChoices: (choices) =>
+                            awnser[question.id] = choices?.toList(),
+                        onSavedText: (text) =>
+                            awnser["${question.id}+t"] = text,
                       );
 
                     case Type.text:
                       return QuestionWithText(
                         question: question.getQuestion(isProfessor),
+                        onSaved: (text) => awnser[question.id] = text,
                       );
                   }
                 }),
@@ -126,6 +147,14 @@ class _StageFormScreenState extends State<StageFormScreen> {
                   child: ElevatedButton(
                     onPressed: _submit,
                     child: const Text("Soumettre"),
+                  ),
+                ),
+                Visibility(
+                  visible: awnserJson != null,
+                  child: TextField(
+                    controller: TextEditingController(text: awnserJson),
+                    minLines: 1,
+                    maxLines: 20,
                   ),
                 ),
               ],

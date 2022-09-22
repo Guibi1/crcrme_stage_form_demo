@@ -113,8 +113,9 @@ class _QuestionWithCheckboxListState extends State<QuestionWithCheckboxList> {
               onSaved: widget.onSavedText,
               initialValue: widget.initialText ?? "",
               validator: (value) {
-                if (choices.values.any((c) => c == true) ||
-                    _textOther.isNotEmpty == true && value!.isEmpty) {
+                if ((choices.values.any((c) => c == true) ||
+                        _textOther.isNotEmpty) &&
+                    value!.isEmpty) {
                   return "Nop";
                 }
                 return null;

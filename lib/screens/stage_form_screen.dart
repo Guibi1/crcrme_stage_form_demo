@@ -31,6 +31,8 @@ class _StageFormScreenState extends State<StageFormScreen> {
   Specialization? specialization;
   Set<String> questions = {};
 
+  bool isProfessor = true;
+
   Map<String, dynamic> awnser = {};
   String? awnserJson;
 
@@ -87,6 +89,11 @@ class _StageFormScreenState extends State<StageFormScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 48, vertical: 16),
             child: Column(
               children: [
+                SwitchListTile(
+                  title: const Text("Montrer les questions des professeurs"),
+                  value: isProfessor,
+                  onChanged: (value) => setState(() => isProfessor = value),
+                ),
                 AutoCompleteField(
                   controller: _sectorController,
                   labelText: "Secteur d'activité",
@@ -108,12 +115,13 @@ class _StageFormScreenState extends State<StageFormScreen> {
                 ),
                 ...questions.map((id) {
                   final question = QuestionFileService.fromId(id);
-                  const isProfessor = true;
+                  final i = QuestionFileService.questions.indexOf(question) + 1;
 
                   switch (question.type) {
                     case Type.radio:
                       return QuestionWithRadioBool(
-                        choiceQuestion: question.getQuestion(isProfessor),
+                        choiceQuestion:
+                            "$i. ${question.getQuestion(isProfessor)}",
                         textTrue: question.choices.firstOrNull,
                         textFalse: question.choices.lastOrNull,
                         textQuestion: question.getTextQuestion(isProfessor),
@@ -124,7 +132,8 @@ class _StageFormScreenState extends State<StageFormScreen> {
 
                     case Type.checkbox:
                       return QuestionWithCheckboxList(
-                        choicesQuestion: question.getQuestion(isProfessor),
+                        choicesQuestion:
+                            "$i. ${question.getQuestion(isProfessor)}",
                         choices: question.choices,
                         textQuestion: question.getTextQuestion(isProfessor),
                         onSavedChoices: (choices) =>
@@ -135,7 +144,7 @@ class _StageFormScreenState extends State<StageFormScreen> {
 
                     case Type.text:
                       return QuestionWithText(
-                        question: question.getQuestion(isProfessor),
+                        question: "$i. ${question.getQuestion(isProfessor)}",
                         onSaved: (text) => awnser[question.id] = text,
                       );
                   }

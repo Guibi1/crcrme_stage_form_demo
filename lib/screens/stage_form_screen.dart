@@ -46,7 +46,6 @@ class _StageFormScreenState extends State<StageFormScreen> {
     setState(() {
       awnserJson = jsonEncode(awnser);
       awnser = {};
-      print(awnserJson);
     });
 
     _formKey.currentState!.reset();
@@ -69,10 +68,10 @@ class _StageFormScreenState extends State<StageFormScreen> {
           _specializationController.text.isNotEmpty) {
         errorSpecialization = "Ce métier n'existe pas";
       }
-    });
 
-    questions = specialization?.questions ?? {};
-    awnserJson = null;
+      questions = specialization?.questions ?? {};
+      awnserJson = null;
+    });
   }
 
   @override

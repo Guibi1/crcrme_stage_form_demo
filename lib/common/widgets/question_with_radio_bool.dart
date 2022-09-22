@@ -6,8 +6,8 @@ import '/common/widgets/question_with_text.dart';
 class QuestionWithRadioBool extends StatefulWidget {
   const QuestionWithRadioBool({
     this.visible = true,
-    this.textTrue = "Oui",
-    this.textFalse = "Non",
+    this.textTrue,
+    this.textFalse,
     required this.choiceQuestion,
     this.initialChoice,
     this.onSavedChoice,
@@ -18,8 +18,8 @@ class QuestionWithRadioBool extends StatefulWidget {
   });
 
   final bool visible;
-  final String textTrue;
-  final String textFalse;
+  final String? textTrue;
+  final String? textFalse;
 
   final String choiceQuestion;
   final bool? initialChoice;
@@ -62,13 +62,13 @@ class _QuestionWithRadioBoolState extends State<QuestionWithRadioBool> {
               builder: (state) => Column(
                 children: [
                   ListTileRadio(
-                    titleLabel: widget.textTrue,
+                    titleLabel: widget.textTrue ?? "Oui",
                     value: true,
                     groupValue: state.value,
                     onChanged: (value) => _setChoice(state, value),
                   ),
                   ListTileRadio(
-                    titleLabel: widget.textFalse,
+                    titleLabel: widget.textFalse ?? "Non",
                     value: false,
                     groupValue: state.value,
                     onChanged: (value) => _setChoice(state, value),

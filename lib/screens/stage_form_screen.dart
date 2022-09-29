@@ -4,6 +4,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
 import '/common/widgets/autocomplete_field.dart';
+import '/common/widgets/list_tile_radio.dart';
 import '/common/widgets/question_with_checkbox_list.dart';
 import '/common/widgets/question_with_radio_bool.dart';
 import '/common/widgets/question_with_text.dart';
@@ -89,10 +90,17 @@ class _StageFormScreenState extends State<StageFormScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 48, vertical: 16),
             child: Column(
               children: [
-                SwitchListTile(
-                  title: const Text("Montrer les questions des professeurs"),
-                  value: isProfessor,
-                  onChanged: (value) => setState(() => isProfessor = value),
+                ListTileRadio(
+                  titleLabel: "Professeur",
+                  value: true,
+                  groupValue: isProfessor,
+                  onChanged: (value) => setState(() => isProfessor = value!),
+                ),
+                ListTileRadio(
+                  titleLabel: "Étudiant",
+                  value: false,
+                  groupValue: isProfessor,
+                  onChanged: (value) => setState(() => isProfessor = value!),
                 ),
                 AutoCompleteField(
                   controller: _sectorController,

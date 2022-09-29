@@ -81,8 +81,6 @@ class _QuestionWithRadioBoolState extends State<QuestionWithRadioBool> {
               question: widget.textQuestion ?? "",
               onSaved: widget.onSavedText,
               initialValue: widget.initialText ?? "",
-              validator: (value) =>
-                  choice == true && value!.isEmpty ? "Nop" : null,
             ),
           ],
         ),

@@ -73,10 +73,6 @@ class _QuestionWithCheckboxListState extends State<QuestionWithCheckboxList> {
                 }
               },
               initialValue: widget.initialChoices ?? {},
-              validator: (value) =>
-                  value!.isEmpty && (!_choiceOther || _textOther.isEmpty)
-                      ? "Nop"
-                      : null,
               builder: (state) => Column(
                 children: [
                   ...widget.choices.map(
@@ -112,14 +108,6 @@ class _QuestionWithCheckboxListState extends State<QuestionWithCheckboxList> {
               question: widget.textQuestion ?? "",
               onSaved: widget.onSavedText,
               initialValue: widget.initialText ?? "",
-              validator: (value) {
-                if ((choices.values.any((c) => c == true) ||
-                        _textOther.isNotEmpty) &&
-                    value!.isEmpty) {
-                  return "Nop";
-                }
-                return null;
-              },
             ),
           ],
         ),

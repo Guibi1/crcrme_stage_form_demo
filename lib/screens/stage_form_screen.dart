@@ -29,7 +29,7 @@ class _StageFormScreenState extends State<StageFormScreen> {
 
   ActivitySector? sector;
   Specialization? specialization;
-  Set<String> questions = {};
+  List<String> questions = [];
 
   bool isProfessor = true;
 
@@ -71,7 +71,7 @@ class _StageFormScreenState extends State<StageFormScreen> {
         errorSpecialization = "Ce métier n'existe pas";
       }
 
-      questions = specialization?.questions ?? {};
+      questions = specialization?.questions.toList() ?? [];
       awnserJson = null;
     });
   }
@@ -115,7 +115,7 @@ class _StageFormScreenState extends State<StageFormScreen> {
                 ),
                 ...questions.map((id) {
                   final question = QuestionFileService.fromId(id);
-                  final i = QuestionFileService.questions.indexOf(question) + 1;
+                  final i = questions.indexOf(id) + 1;
 
                   switch (question.type) {
                     case Type.radio:

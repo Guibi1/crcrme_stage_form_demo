@@ -97,11 +97,12 @@ class _StageFormScreenState extends State<StageFormScreen> {
                   onChanged: (value) => setState(() => isProfessor = value!),
                 ),
                 ListTileRadio(
-                  titleLabel: "Étudiant",
+                  titleLabel: "Élève",
                   value: false,
                   groupValue: isProfessor,
                   onChanged: (value) => setState(() => isProfessor = value!),
                 ),
+                const SizedBox(height: 24),
                 AutoCompleteField(
                   controller: _sectorController,
                   labelText: "Secteur d'activité",
@@ -121,6 +122,7 @@ class _StageFormScreenState extends State<StageFormScreen> {
                     ...?sector?.jobs.map((job) => "${job.id} - ${job.name}")
                   ],
                 ),
+                const SizedBox(height: 24),
                 ...questions.map((id) {
                   final question = QuestionFileService.fromId(id);
                   final i = questions.indexOf(id) + 1;

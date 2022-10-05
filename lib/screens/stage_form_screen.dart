@@ -43,15 +43,15 @@ class _StageFormScreenState extends State<StageFormScreen> {
 
     _formKey.currentState!.save();
 
-    _sectorController.text = "";
-    _specializationController.text = "";
-
     setState(() {
       awnserJson = jsonEncode(awnser);
       awnser = {};
     });
 
-    _formKey.currentState!.reset();
+    // _sectorController.text = "";
+    // _specializationController.text = "";
+
+    // _formKey.currentState!.reset();
   }
 
   void onJobSubmit() {

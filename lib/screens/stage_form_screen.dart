@@ -26,7 +26,7 @@ class _StageFormScreenState extends State<StageFormScreen> {
 
   ActivitySector? activitySector;
   Specialization? specialization;
-  List<String> questions = [];
+  Set<String> questions = {};
 
   bool isProfessor = true;
 
@@ -65,7 +65,7 @@ class _StageFormScreenState extends State<StageFormScreen> {
       specialization = null;
     }
 
-    questions = specialization?.questions.toList() ?? [];
+    questions = specialization?.questions ?? {};
     setState(() {});
   }
 
@@ -85,7 +85,7 @@ class _StageFormScreenState extends State<StageFormScreen> {
       errorSpecialization = null;
     }
 
-    questions = this.specialization?.questions.toList() ?? [];
+    questions = this.specialization?.questions ?? {};
     setState(() {});
   }
 
@@ -118,8 +118,11 @@ class _StageFormScreenState extends State<StageFormScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 48, vertical: 16),
             child: Column(
               children: [
+                const ListTile(
+                  title: Text("Les questions sont posés à :"),
+                ),
                 ListTileRadio(
-                  titleLabel: "Professeur",
+                  titleLabel: "Personne de l'entreprise",
                   value: true,
                   groupValue: isProfessor,
                   onChanged: (value) => setState(() => isProfessor = value!),
@@ -204,42 +207,48 @@ class _StageFormScreenState extends State<StageFormScreen> {
                   },
                 ),
                 const SizedBox(height: 24),
-                ...questions.map((id) {
-                  final question = QuestionFileService.fromId(id);
-                  final i = questions.indexOf(id) + 1;
+                ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: questions.length,
+                  itemBuilder: (context, index) {
+                    String id = questions.elementAt(index);
+                    final question = QuestionFileService.fromId(id);
 
-                  switch (question.type) {
-                    case Type.radio:
-                      return QuestionWithRadioBool(
-                        choiceQuestion:
-                            "$i. ${question.getQuestion(isProfessor)}",
-                        textTrue: question.choices.firstOrNull,
-                        textFalse: question.choices.lastOrNull,
-                        textQuestion: question.getTextQuestion(isProfessor),
-                        onSavedChoice: (choice) => awnser[question.id] = choice,
-                        onSavedText: (text) =>
-                            awnser["${question.id}+t"] = text,
-                      );
+                    switch (question.type) {
+                      case Type.radio:
+                        return QuestionWithRadioBool(
+                          choiceQuestion:
+                              "${index + 1}. ${question.getQuestion(isProfessor)}",
+                          textTrue: question.choices.firstOrNull,
+                          textFalse: question.choices.lastOrNull,
+                          textQuestion: question.getTextQuestion(isProfessor),
+                          onSavedChoice: (choice) =>
+                              awnser[question.id] = choice,
+                          onSavedText: (text) =>
+                              awnser["${question.id}+t"] = text,
+                        );
 
-                    case Type.checkbox:
-                      return QuestionWithCheckboxList(
-                        choicesQuestion:
-                            "$i. ${question.getQuestion(isProfessor)}",
-                        choices: question.choices,
-                        textQuestion: question.getTextQuestion(isProfessor),
-                        onSavedChoices: (choices) =>
-                            awnser[question.id] = choices?.toList(),
-                        onSavedText: (text) =>
-                            awnser["${question.id}+t"] = text,
-                      );
+                      case Type.checkbox:
+                        return QuestionWithCheckboxList(
+                          choicesQuestion:
+                              "${index + 1}. ${question.getQuestion(isProfessor)}",
+                          choices: question.choices,
+                          textQuestion: question.getTextQuestion(isProfessor),
+                          onSavedChoices: (choices) =>
+                              awnser[question.id] = choices?.toList(),
+                          onSavedText: (text) =>
+                              awnser["${question.id}+t"] = text,
+                        );
 
-                    case Type.text:
-                      return QuestionWithText(
-                        question: "$i. ${question.getQuestion(isProfessor)}",
-                        onSaved: (text) => awnser[question.id] = text,
-                      );
-                  }
-                }),
+                      case Type.text:
+                        return QuestionWithText(
+                          question:
+                              "${index + 1}. ${question.getQuestion(isProfessor)}",
+                          onSaved: (text) => awnser[question.id] = text,
+                        );
+                    }
+                  },
+                ),
                 const SizedBox(height: 24),
                 Visibility(
                   visible: questions.isNotEmpty,

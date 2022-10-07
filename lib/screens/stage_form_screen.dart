@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
-import '/common/widgets/autocomplete_field.dart';
 import '/common/widgets/list_tile_radio.dart';
 import '/common/widgets/question_with_checkbox_list.dart';
 import '/common/widgets/question_with_radio_bool.dart';
@@ -22,13 +21,10 @@ class StageFormScreen extends StatefulWidget {
 class _StageFormScreenState extends State<StageFormScreen> {
   final _formKey = GlobalKey<FormState>();
 
-  final _sectorController = TextEditingController();
-  final _specializationController = TextEditingController();
-
   String? errorSector;
   String? errorSpecialization;
 
-  ActivitySector? sector;
+  ActivitySector? activitySector;
   Specialization? specialization;
   List<String> questions = [];
 
@@ -38,42 +34,74 @@ class _StageFormScreenState extends State<StageFormScreen> {
   String? awnserJson;
 
   void _submit() {
-    if (sector == null || specialization == null) return;
+    if (activitySector == null || specialization == null) return;
     if (!FormService.validateForm(_formKey)) return;
 
     _formKey.currentState!.save();
 
+    // TODO: Save data properly instead of displaying it
     setState(() {
       awnserJson = jsonEncode(awnser);
       awnser = {};
     });
 
-    // _sectorController.text = "";
-    // _specializationController.text = "";
-
     // _formKey.currentState!.reset();
   }
 
-  void onJobSubmit() {
-    setState(() {
-      sector = JobDataFileService.sectors.firstWhereOrNull(
-        (sector) => "${sector.id} - ${sector.name}" == _sectorController.text,
+  void _onSectorChange(sector) {
+    if (sector is ActivitySector) {
+      activitySector = sector;
+    } else if (sector is String) {
+      activitySector = JobDataFileService.sectors.firstWhereOrNull(
+        (s) => "${int.tryParse(s.id)} - ${s.name}" == sector,
       );
-      specialization = sector?.jobs.firstWhereOrNull(
-        (job) => "${job.id} - ${job.name}" == _specializationController.text,
-      );
+    } else {
+      throw TypeError();
+    }
 
+    if (activitySector != null) {
       errorSector = null;
-      errorSpecialization = null;
-      if (sector == null) {
-        errorSector = "Ce secteur n'existe pas";
-      } else if (specialization == null &&
-          _specializationController.text.isNotEmpty) {
-        errorSpecialization = "Ce métier n'existe pas";
-      }
+    } else {
+      specialization = null;
+    }
 
-      questions = specialization?.questions.toList() ?? [];
+    questions = specialization?.questions.toList() ?? [];
+    setState(() {});
+  }
+
+  void _onSpecializationChange(specialization) {
+    if (specialization is Specialization) {
+      this.specialization = specialization;
+    } else if (specialization is String) {
+      this.specialization = activitySector?.jobs.firstWhereOrNull(
+        (s) => "${int.tryParse(s.id)} - ${s.name}" == specialization,
+      );
+    } else {
+      throw TypeError();
+    }
+
+    if (this.specialization != null) {
       awnserJson = null;
+      errorSpecialization = null;
+    }
+
+    questions = this.specialization?.questions.toList() ?? [];
+    setState(() {});
+  }
+
+  void _testSectorValid() {
+    setState(() {
+      errorSector = activitySector == null ? "Ce secteur n'existe pas" : null;
+    });
+  }
+
+  void _testSpecializationValid() {
+    setState(() {
+      if (specialization == null && activitySector != null) {
+        errorSpecialization = "Ce métier n'existe pas";
+      } else {
+        errorSpecialization = null;
+      }
     });
   }
 
@@ -103,24 +131,77 @@ class _StageFormScreenState extends State<StageFormScreen> {
                   onChanged: (value) => setState(() => isProfessor = value!),
                 ),
                 const SizedBox(height: 24),
-                AutoCompleteField(
-                  controller: _sectorController,
-                  labelText: "Secteur d'activité",
-                  errorText: errorSector,
-                  onSubmit: onJobSubmit,
-                  suggestions: [
-                    ...JobDataFileService.sectors
-                        .map((sector) => "${sector.id} - ${sector.name}")
-                  ],
+                Autocomplete<ActivitySector>(
+                  displayStringForOption: (sector) =>
+                      "${int.tryParse(sector.id)} - ${sector.name}",
+                  optionsBuilder: (textEditingValue) {
+                    int? number = int.tryParse(textEditingValue.text);
+                    if (number != null) {
+                      return JobDataFileService.sectors.where(
+                        (sector) => sector.id.contains(number.toString()),
+                      );
+                    }
+                    return JobDataFileService.sectors.where(
+                      (suggestion) => suggestion.name
+                          .toLowerCase()
+                          .contains(textEditingValue.text.toLowerCase()),
+                    );
+                  },
+                  onSelected: _onSectorChange,
+                  fieldViewBuilder: (_, controller, focusNode, onSubmitted) {
+                    focusNode.removeListener(_testSectorValid);
+                    if (focusNode.hasPrimaryFocus) {
+                      focusNode.addListener(_testSectorValid);
+                    }
+
+                    return TextField(
+                      controller: controller,
+                      focusNode: focusNode,
+                      onSubmitted: (_) => onSubmitted(),
+                      onChanged: _onSectorChange,
+                      decoration: InputDecoration(
+                        labelText: "Secteur d'activité",
+                        errorText: errorSector,
+                      ),
+                    );
+                  },
                 ),
-                AutoCompleteField(
-                  controller: _specializationController,
-                  labelText: "Métier",
-                  errorText: errorSpecialization,
-                  onSubmit: onJobSubmit,
-                  suggestions: [
-                    ...?sector?.jobs.map((job) => "${job.id} - ${job.name}")
-                  ],
+                Autocomplete<Specialization>(
+                  displayStringForOption: (sector) =>
+                      "${int.tryParse(sector.id)} - ${sector.name}",
+                  optionsBuilder: (textEditingValue) {
+                    if (activitySector == null) return [];
+                    int? number = int.tryParse(textEditingValue.text);
+                    if (number != null) {
+                      return activitySector!.jobs.where(
+                        (job) => job.id.contains(number.toString()),
+                      );
+                    }
+                    return activitySector!.jobs.where(
+                      (job) => job.name
+                          .toLowerCase()
+                          .contains(textEditingValue.text.toLowerCase()),
+                    );
+                  },
+                  onSelected: _onSpecializationChange,
+                  fieldViewBuilder: (_, controller, focusNode, onSubmitted) {
+                    focusNode.removeListener(_testSpecializationValid);
+                    if (focusNode.hasPrimaryFocus) {
+                      focusNode.addListener(_testSpecializationValid);
+                    }
+
+                    return TextField(
+                      enabled: activitySector != null,
+                      controller: controller,
+                      focusNode: focusNode,
+                      onSubmitted: (_) => onSubmitted(),
+                      onChanged: _onSpecializationChange,
+                      decoration: InputDecoration(
+                        labelText: "Métier",
+                        errorText: errorSpecialization,
+                      ),
+                    );
+                  },
                 ),
                 const SizedBox(height: 24),
                 ...questions.map((id) {

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:collection/collection.dart';
+import 'package:crcrme_stage_form_demo/common/widgets/autocomplete_field.dart';
 import 'package:flutter/material.dart';
 
 import '/common/widgets/list_tile_radio.dart';
@@ -48,7 +49,7 @@ class _StageFormScreenState extends State<StageFormScreen> {
     // _formKey.currentState!.reset();
   }
 
-  void _onSectorChange(sector) {
+  void _onSectorChanged(sector) {
     if (sector is ActivitySector) {
       activitySector = sector;
     } else if (sector is String) {
@@ -69,7 +70,7 @@ class _StageFormScreenState extends State<StageFormScreen> {
     setState(() {});
   }
 
-  void _onSpecializationChange(specialization) {
+  void _onSpecializationChanged(specialization) {
     if (specialization is Specialization) {
       this.specialization = specialization;
     } else if (specialization is String) {
@@ -134,7 +135,7 @@ class _StageFormScreenState extends State<StageFormScreen> {
                   onChanged: (value) => setState(() => isProfessor = value!),
                 ),
                 const SizedBox(height: 24),
-                Autocomplete<ActivitySector>(
+                AutocompleteField<ActivitySector>(
                   displayStringForOption: (sector) =>
                       "${int.tryParse(sector.id)} - ${sector.name}",
                   optionsBuilder: (textEditingValue) {
@@ -150,26 +151,13 @@ class _StageFormScreenState extends State<StageFormScreen> {
                           .contains(textEditingValue.text.toLowerCase()),
                     );
                   },
-                  onSelected: _onSectorChange,
-                  fieldViewBuilder: (_, controller, focusNode, onSubmitted) {
-                    focusNode.removeListener(_testSectorValid);
-                    if (focusNode.hasPrimaryFocus) {
-                      focusNode.addListener(_testSectorValid);
-                    }
-
-                    return TextField(
-                      controller: controller,
-                      focusNode: focusNode,
-                      onSubmitted: (_) => onSubmitted(),
-                      onChanged: _onSectorChange,
-                      decoration: InputDecoration(
-                        labelText: "Secteur d'activité",
-                        errorText: errorSector,
-                      ),
-                    );
-                  },
+                  onSelected: _onSectorChanged,
+                  labelText: "Secteur d'activité",
+                  errorText: errorSector,
+                  onChanged: _onSectorChanged,
+                  testChoiceIsValid: _testSectorValid,
                 ),
-                Autocomplete<Specialization>(
+                AutocompleteField<Specialization>(
                   displayStringForOption: (sector) =>
                       "${int.tryParse(sector.id)} - ${sector.name}",
                   optionsBuilder: (textEditingValue) {
@@ -186,25 +174,12 @@ class _StageFormScreenState extends State<StageFormScreen> {
                           .contains(textEditingValue.text.toLowerCase()),
                     );
                   },
-                  onSelected: _onSpecializationChange,
-                  fieldViewBuilder: (_, controller, focusNode, onSubmitted) {
-                    focusNode.removeListener(_testSpecializationValid);
-                    if (focusNode.hasPrimaryFocus) {
-                      focusNode.addListener(_testSpecializationValid);
-                    }
-
-                    return TextField(
-                      enabled: activitySector != null,
-                      controller: controller,
-                      focusNode: focusNode,
-                      onSubmitted: (_) => onSubmitted(),
-                      onChanged: _onSpecializationChange,
-                      decoration: InputDecoration(
-                        labelText: "Métier",
-                        errorText: errorSpecialization,
-                      ),
-                    );
-                  },
+                  onSelected: _onSpecializationChanged,
+                  labelText: "Métier",
+                  errorText: errorSpecialization,
+                  onChanged: _onSpecializationChanged,
+                  testChoiceIsValid: _testSpecializationValid,
+                  enabled: activitySector != null,
                 ),
                 const SizedBox(height: 24),
                 ListView.builder(

@@ -184,6 +184,7 @@ class _StageFormScreenState extends State<StageFormScreen> {
                 const SizedBox(height: 24),
                 ListView.builder(
                   shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
                   itemCount: questions.length,
                   itemBuilder: (context, index) {
                     String id = questions.elementAt(index);

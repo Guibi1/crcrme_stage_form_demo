@@ -33,11 +33,6 @@ class ActivitySector extends ItemSerializable {
         super.fromSerialized(map);
 
   @override
-  ItemSerializable deserializeItem(map) {
-    return ActivitySector.fromSerialized(map);
-  }
-
-  @override
   Map<String, dynamic> serializedMap() {
     throw "Activity Sector should not be serialized. Store its ID intead.";
   }
@@ -61,11 +56,6 @@ class Specialization extends ItemSerializable {
         super.fromSerialized(map);
 
   @override
-  ItemSerializable deserializeItem(map) {
-    return Specialization.fromSerialized(map);
-  }
-
-  @override
   Map<String, dynamic> serializedMap() {
     throw "Job should not be serialized. Store its ID intead.";
   }
@@ -87,11 +77,6 @@ class Skill extends ItemSerializable {
         tasks = List.from(map["tasks"], growable: false),
         risks = Set.from(map["risks"]),
         super.fromSerialized(map);
-
-  @override
-  ItemSerializable deserializeItem(map) {
-    return Skill.fromSerialized(map);
-  }
 
   @override
   Map<String, dynamic> serializedMap() {
